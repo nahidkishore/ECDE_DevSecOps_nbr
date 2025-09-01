@@ -15,3 +15,32 @@ sudo mv gitleaks /usr/local/bin/gitleaks
 sudo chmod +x /usr/local/bin/gitleaks
 gitleaks version
 ```
+
+
+# Configure Pre-commit with Gitleaks
+
+### Step 1: Initialize in Your Repo
+
+
+```bash
+cd your-repo/
+git init  # You missed this step - pre-commit requires a git repo
+ls -la .git  # Verify .git directory exists
+# run Pre-commit Installation
+pre-commit install  # Creates .git/hooks/pre-commit
+# Expected output: "pre-commit installed at .git/hooks/pre-commit"
+
+```
+
+# Step 2: Create .pre-commit-config.yaml
+
+
+```yml
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.2
+    hooks:
+      - id: gitleaks
+        args: [--verbose, --redact]
+
+```
