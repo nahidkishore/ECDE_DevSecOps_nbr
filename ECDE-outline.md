@@ -30,7 +30,7 @@
 * Threat modeling frameworks: STRIDE, DREAD, PASTA
 * Secure coding principles
 * Vulnerability management lifecycle
-* OWASP Top 10 & SANS Top 25 risks mapping
+* OWASP Top 10
 
 ---
 
