@@ -57,9 +57,12 @@ Then, you can run the script using:
 
 ./install_docker.sh
 
-# SonarQube
+
+# SonarQube Installation process
 
 ```bash
+docker pull sonarqube:lts-community
+
 docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
 ```
 
