@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        
+         stage('Git Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/nahidkishore/Shop-safely-now.git'
+            }
+        }
+        
+        
+
+stage('Secrets Scan with Gitleaks') {
+    steps {
+        echo " Scanning for secrets using Gitleaks..."
+        sh '''
+            gitleaks detect --source . --redact --no-git -v || echo "⚠️ Gitleaks found issues!"
+        '''
+    }
+}
+
+
+        
+        
+        
+        
+    }
+}
