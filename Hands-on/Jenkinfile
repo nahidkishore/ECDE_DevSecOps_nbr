@@ -1,5 +1,16 @@
 pipeline {
     agent any
+    tools {
+        jdk 'jdk17'
+        nodejs 'node20'
+    }
+
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner'
+
+
+    }
+
 
     stages {
         stage('Hello') {
@@ -46,6 +57,51 @@ stage('🔐 Secrets Scan with Gitleaks') {
     }
 }
 
+
+stage("SonarQube Analysis") {
+    steps {
+        script {
+            echo '🔍 Starting SonarQube Static Code Analysis...'
+        }
+
+        withSonarQubeEnv('sonar-server') {
+            sh """
+                ${SCANNER_HOME}/bin/sonar-scanner \
+                -Dsonar.projectKey=Shop-Safely-Now \
+                -Dsonar.projectName=Shop-Safely-Now \
+                -Dsonar.java.binaries=. \
+                -Dsonar.qualitygate.wait=true
+            """
+        }
+
+        script {
+            echo '✅ SonarQube Scanner executed. Waiting for Quality Gate result...'
+        }
+    }
+}
+
+        stage("SonarQube Quality Gate") {
+    steps {
+        timeout(time: 2, unit: 'MINUTES') {
+            script {
+                echo '🕒 Waiting for SonarQube Quality Gate result (max 2 minutes)...'
+
+                def qualityGate = waitForQualityGate(
+                    abortPipeline: true, 
+                    credentialsId: 'sonar-token'
+                )
+
+                echo "🛡️ SonarQube Quality Gate Status: ${qualityGate.status}"
+
+                if (qualityGate.status != 'OK') {
+                    error "❌ Quality Gate failed: ${qualityGate.status}. Blocking the pipeline."
+                } else {
+                    echo '✅ Quality Gate passed!'
+                }
+            }
+        }
+    }
+}
 
 
         
