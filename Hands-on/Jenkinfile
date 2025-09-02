@@ -26,6 +26,28 @@ stage('Secrets Scan with Gitleaks') {
 }
 
 
+stage('🔐 Secrets Scan with Gitleaks') {
+    steps {
+        script {
+            echo " Scanning for hardcoded secrets using Gitleaks..."
+
+            // Run gitleaks and capture exit status
+            def status = sh (
+                script: 'gitleaks detect --source . --redact --no-git -v',
+                returnStatus: true
+            )
+
+            if (status != 0) {
+                error " Gitleaks found secrets in the code! Failing pipeline."
+            } else {
+                echo " No secrets found. Gitleaks scan passed."
+            }
+        }
+    }
+}
+
+
+
         
         
         
