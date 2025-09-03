@@ -122,7 +122,45 @@ stage("SonarQube Analysis") {
             }
         }
      
+        stage("Build and Push to Docker Hub") {
+            steps {
+                echo ' Building and pushing Docker image...'
+                withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                    script{
+                        def imageTag = "${dockerHubUser}/shop-safely-now:${env.BUILD_NUMBER}"
+                        sh """
+                        docker build -t ${imageTag} .
+                        echo "${dockerHubPassword}" | docker login -u "${dockerHubUser}" --password-stdin
+                        docker push ${imageTag}
+                        
+
+
+                        """
+                        env.BUILT_IMAGE = imageTag
+                    }
+                }
+            }
+        }
         
+         stage("TRIVY Docker Image Scan") {
+    steps {
+        echo 'Scanning built Docker image with Trivy...'
+        script {
+            def imageToScan = env.BUILT_IMAGE
+            if (!imageToScan?.trim()) {
+                error "❌ BUILT_IMAGE is not set! Please verify the Build stage."
+            }
+
+            sh """
+                trivy image --format json --severity CRITICAL,HIGH --output trivy-image-scan.json ${imageToScan} || echo "⚠️ Vulnerabilities found!"
+
+            """
+        }
+        archiveArtifacts artifacts: 'trivy-image-scan.json', fingerprint: true
+    }
+}
+
+
         
         
     }
