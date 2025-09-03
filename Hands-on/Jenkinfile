@@ -104,7 +104,24 @@ stage("SonarQube Analysis") {
 }
 
 
-        
+   stage("OWASP Dependency Check") {
+            steps {
+                script {
+                    echo 'Starting OWASP Dependency Check...'
+                    try {
+                        dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'DP-Check'
+                        echo 'OWASP Dependency Check completed successfully.'
+                    } catch (Exception e) {
+                        error "OWASP Dependency Check failed: ${e.message}"
+                    }
+
+                    echo 'Publishing OWASP Dependency Check report...'
+                    dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                    echo 'OWASP Dependency Check report published successfully.'
+                }
+            }
+        }
+     
         
         
         
