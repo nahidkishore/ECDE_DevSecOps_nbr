@@ -13,6 +13,14 @@ pipeline {
 
 
     stages {
+
+      stage('Clean Workspace') {
+            steps {
+                cleanWs()
+                sh 'rm -rf $HOME/.sonar/cache || true'
+            }
+        }
+
         stage('Hello') {
             steps {
                 echo 'Hello World'
