@@ -1,0 +1,19 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-labels
+spec:
+  validationFailureAction: Enforce
+  rules:
+  - name: check-for-labels
+    match:
+      resources:
+        kinds:
+        - Pod
+    validate:
+      message: "All pods must have 'app' and 'owner' labels"
+      pattern:
+        metadata:
+          labels:
+            app: "?*"
+            owner: "?*"

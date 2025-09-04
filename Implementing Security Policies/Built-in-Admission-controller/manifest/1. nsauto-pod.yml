@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-demo
+  namespace: auto-created-ns  # 🎯 Doesn't exist yet!
+spec:
+  containers:
+  - name: nginx
+    image: nginx
