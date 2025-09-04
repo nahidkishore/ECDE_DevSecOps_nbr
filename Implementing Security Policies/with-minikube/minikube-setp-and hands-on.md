@@ -1,12 +1,13 @@
 
 # install minikube on vm
-```bash
-### Install Minikube on VM / Ec2 Instance: 
+
+## Install Minikube on VM / Ec2 Instance: 
 
 
 We will launch an EC2 Medium Instance (2vCPU) and install Minikube on it. To install Minikube, Docker is a prerequisite.
 The bellow command needs to install for the Deployment server
 
+```bash
 sudo apt-get update
 sudo apt-get install docker.io -y
 sudo usermod -aG docker $USER && newgrp docker
