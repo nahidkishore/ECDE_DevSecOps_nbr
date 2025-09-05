@@ -1,3 +1,7 @@
+- --enable-admission-plugins=
+
+sudo get ns
+
 
 # install minikube on vm
 
